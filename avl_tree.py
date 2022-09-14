@@ -11,20 +11,6 @@ class Tree:
     def __init__(self):
         self.root = None
 
-    def insert(self, node, key):
-
-        if not node:
-            return Node(key)
-        elif key < node.key:
-            node.left = self.insert(node.left, key)
-        else:
-            node.right = self.insert(node.right, key)
-
-        self.balance_tree(node)
-
-        self.root = node
-        return node
-
     def delete(self, node, key):
 
         if not node:
@@ -39,18 +25,22 @@ class Tree:
         else:
             if node.left is None:
                 temp = node.right
+                if node is self.root:
+                    self.root = temp
                 node = None
                 return temp
 
             elif node.right is None:
                 temp = node.left
+                if node is self.root:
+                    self.root = temp
                 node = None
                 return temp
 
             temp = self.get_most_left(node.right)
             node.key = temp.key
             node.right = self.delete(node.right,
-                                     temp.val)
+                                     temp.key)
 
         if node is None:
             return node
@@ -89,7 +79,7 @@ class Tree:
         node.height = 1 + max(self.get_height(node.left),
                               self.get_height(node.right))
         new_parent.height = 1 + max(self.get_height(new_parent.left),
-                           self.get_height(new_parent.right))
+                                    self.get_height(new_parent.right))
 
         return new_parent
 
@@ -103,7 +93,7 @@ class Tree:
         node.height = 1 + max(self.get_height(node.left),
                               self.get_height(node.right))
         new_parent.height = 1 + max(self.get_height(new_parent.left),
-                           self.get_height(new_parent.right))
+                                    self.get_height(new_parent.right))
 
         return new_parent
 
@@ -134,3 +124,19 @@ class Tree:
         self.print_tree(node.left)
         self.print_tree(node.right)
 
+
+if __name__ == '__main__':
+    tree = Tree()
+    tree.root = Node(12)
+    node15 = tree.root.right = Node(15)
+    node10 = tree.root.left = Node(10)
+    node21 = node15.right = Node(21)
+    node14 = node15.left = Node(14)
+    node1 = node10.left = Node(1)
+
+    tree.print_tree(tree.root)
+
+    tree.delete(tree.root, 1)
+
+    print("    ------------   ")
+    tree.print_tree(tree.root)
